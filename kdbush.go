@@ -4,24 +4,24 @@ import (
 	"math"
 )
 
-// Interface, that should be implemented by indexing structure
+// Point Interface, that should be implemented by indexing structure
 // It's just simply returns points coordinates
 // Called once, only when index created, so you could calc values on the fly for this interface
 type Point interface {
 	Coordinates() (X, Y float64)
 }
 
-// Minimal struct, that implements Point interface
+// SimplePoint Minimal struct, that implements Point interface
 type SimplePoint struct {
 	X, Y float64
 }
 
-// SimplePoint's  implementation of Point interface
+// Coordinates SimplePoint's  implementation of Point interface
 func (sp *SimplePoint) Coordinates() (float64, float64) {
 	return sp.X, sp.Y
 }
 
-// A very fast static spatial index for 2D points based on a flat KD-tree.
+// KDBush A very fast static spatial index for 2D points based on a flat KD-tree.
 // Points only, no rectangles
 // static (no add, remove items)
 // 2 dimensional
@@ -34,7 +34,7 @@ type KDBush struct {
 	coords []float64 //array of coordinates
 }
 
-// Create new index from points
+// NewBush Create new index from points
 // Structure don't copy points itself, copy only coordinates
 // Returns pointer to new KDBush index object, all data in it already indexed
 // Input:
@@ -46,7 +46,7 @@ func NewBush(points []Point, nodeSize int) *KDBush {
 	return &b
 }
 
-// Finds all items within the given bounding box and returns an array of indices that refer to the items in the original points input slice.
+// Range Finds all items within the given bounding box and returns an array of indices that refer to the items in the original points input slice.
 func (bush *KDBush) Range(minX, minY, maxX, maxY float64) []int {
 	stack := []int{0, len(bush.idxs) - 1, 0}
 	result := []int{}
@@ -98,7 +98,7 @@ func (bush *KDBush) Range(minX, minY, maxX, maxY float64) []int {
 	return result
 }
 
-// Finds all items within a given radius from the query point and returns an array of indices.
+// Within Finds all items within a given radius from the query point and returns an array of indices.
 func (bush *KDBush) Within(point Point, radius float64) []int {
 	stack := []int{0, len(bush.idxs) - 1, 0}
 	result := []int{}
